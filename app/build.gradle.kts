@@ -48,5 +48,7 @@ dependencies {
     releaseImplementation(libs.imageslide)
     //sajat implementation
     implementation("com.github.denzcoskun:ImageSlideshow:0.1.2")
-
+    implementation("com.otaliastudios:zoomlayout:1.9.0")
+    implementation("com.github.jkantech:crud:1.0.2")
+    implementation("com.android.volley:volley:1.2.1")
 }

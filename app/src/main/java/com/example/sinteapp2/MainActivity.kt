@@ -2,12 +2,8 @@ package com.example.sinteapp2
 
 import android.graphics.Color
 import android.os.Bundle
-import android.provider.CalendarContract.Colors
 import android.util.Log
-import android.view.View
-import android.view.View.OnClickListener
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,6 +11,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
+import com.github.jkantech.crud.Crud
+import com.github.jkantech.crud.OnResponseListener
+import org.json.JSONException
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +26,28 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val getCrud=Crud(this, "http://89.107.249.65/home/weblapph/api/query/v1/")
+
+        val conds= JSONObject()
+        try {
+            conds.put("ID",1)
+
+        }catch (e: JSONException){
+            e.printStackTrace()
+        }
+
+        getCrud["slider_tartalma", null, object:OnResponseListener{
+            override fun onError(error: String?) {
+                Log.d("CRUD_ERROR", error.toString())
+            }
+
+            override fun onResponse(response: String?) {
+                Log.d("CRUD", response.toString())
+            }
+        }]
+
+
         val imageList = ArrayList<SlideModel>() // Create image list
 
 // imageList.add(SlideModel("String Url" or R.drawable)
@@ -65,5 +87,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
     }
 }
