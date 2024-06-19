@@ -1,20 +1,23 @@
 package com.example.sinteapp2
 
+import android.app.Notification
 import android.graphics.Color
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
-import com.github.jkantech.crud.Crud
-import com.github.jkantech.crud.OnResponseListener
-import org.json.JSONException
-import org.json.JSONObject
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,66 +30,62 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val getCrud=Crud(this, "http://89.107.249.65/home/weblapph/api/query/v1/")
-
-        val conds= JSONObject()
-        try {
-            conds.put("ID",1)
-
-        }catch (e: JSONException){
-            e.printStackTrace()
-        }
-
-        getCrud["slider_tartalma", null, object:OnResponseListener{
-            override fun onError(error: String?) {
-                Log.d("CRUD_ERROR", error.toString())
-            }
-
-            override fun onResponse(response: String?) {
-                Log.d("CRUD", response.toString())
-            }
-        }]
-
-
         val imageList = ArrayList<SlideModel>() // Create image list
-
-// imageList.add(SlideModel("String Url" or R.drawable)
-// imageList.add(SlideModel("String Url" or R.drawable, "title") You can add title
-
-        imageList.add(
-            SlideModel(
-                "https://bit.ly/2YoJ77H",
-                "The animal population decreased by 58 percent in 42 years."
-            )
-        )
-        imageList.add(
-            SlideModel(
-                "https://sintegroup.hu/wp-content/uploads/2022/12/udvozlet.png",
-                "The animal population decreased by 58 percent in 42 years."
-            )
-        )
-
         val imageSlider = findViewById<ImageSlider>(R.id.image_slider)
-        imageSlider.setImageList(imageList)
+        val playStopImageView = findViewById<ImageView>(R.id.playStopImageView)
+        
+        var fileokLista=""
 
-        val playStopImageView=findViewById<ImageView>(R.id.playStopImageView)
+        val insertDataQueqe = Volley.newRequestQueue(this)
+        val url ="http://weblapp.hu/getFiles.php"
 
-        imageSlider.setItemClickListener(object : ItemClickListener {
-            override fun doubleClick(position: Int) {
-                //Log.d("Click", "Double click")
-                imageSlider.startSliding(3000)
-                playStopImageView.setBackgroundColor(Color.GREEN)
-                //Toast.makeText(this@MainActivity, "Start", Toast.LENGTH_LONG).show()
+        val insertDataStringRequest = StringRequest(Request.Method.GET, url,
+            Response.Listener<String> { response ->Log.d("Szerver_response", response)
+                                      fileokLista=response
+                                      val fileTempCsakhogyLegyen=fileokLista.split("\n")
+                                      for (fileBelsoTempCsakhogyBonyiLegyen in fileTempCsakhogyLegyen){
+                                          Log.d("Szerver_Belso", "http://weblapp.hu/kepek/$fileBelsoTempCsakhogyBonyiLegyen")
+                                          imageList.add(
+                                              SlideModel(
+                                                  "http://weblapp.hu/kepek/$fileBelsoTempCsakhogyBonyiLegyen",
+                                                  "Nem kell title"
+                                              )
+                                          )
+                                      }
+                                        imageSlider.setImageList(imageList)
+                                        imageSlider.setItemClickListener(object : ItemClickListener {
+                                            override fun doubleClick(position: Int) {
+                                                //Log.d("Click", "Double click")
+                                                imageSlider.startSliding(3000)
+                                                playStopImageView.setBackgroundColor(Color.GREEN)
+                                                //Toast.makeText(this@MainActivity, "Start", Toast.LENGTH_LONG).show()
+                                        }
+
+                                            override fun onItemSelected(position: Int) {
+                                                //Log.d("Click", "Simple click")
+                                                imageSlider.stopSliding()
+                                                playStopImageView.setBackgroundColor(Color.RED)
+                                                //Toast.makeText(this@MainActivity, "Stop", Toast.LENGTH_LONG).show()
+                                    }
+
+                            })
+                                      },
+
+            Response.ErrorListener { error-> Log.d("Szerver_error", error.message.toString()) })
+        insertDataQueqe.add(insertDataStringRequest)
+
+        val timer = object: CountDownTimer(1800000, 1800000) {
+            override fun onTick(millisUntilFinished: Long) {
+                Log.d("Timer____", millisUntilFinished.toString())
+                imageList.removeAll(imageList.toSet())
+                insertDataQueqe.add(insertDataStringRequest)
             }
-
-            override fun onItemSelected(position: Int) {
-                //Log.d("Click", "Simple click")
-                imageSlider.stopSliding()
-                playStopImageView.setBackgroundColor(Color.RED)
-                //Toast.makeText(this@MainActivity, "Stop", Toast.LENGTH_LONG).show()
+            override fun onFinish() {
+                Log.d("Timer_Finish", "Finish_onStart")
+                super.start()
             }
-
-        })
-
+        }
+        timer.start()
     }
+
 }

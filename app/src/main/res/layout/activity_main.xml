@@ -38,7 +38,9 @@
                 app:iss_auto_cycle="true"
                 app:iss_delay="3000"
                 app:iss_period="3000"
-                app:iss_text_align="CENTER"></com.denzcoskun.imageslider.ImageSlider>
+                app:iss_text_align="CENTER">
+
+            </com.denzcoskun.imageslider.ImageSlider>
         </LinearLayout>
     </com.otaliastudios.zoom.ZoomLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
