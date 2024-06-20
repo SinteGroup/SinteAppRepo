@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -37,17 +38,18 @@ class MainActivity : AppCompatActivity() {
         var fileokLista=""
 
         val insertDataQueqe = Volley.newRequestQueue(this)
-        val url ="http://weblapp.hu/getFiles.php"
+        val domain="http://195.228.220.2:65535/"
+        val url =domain+"script/getFiles.php"
 
         val insertDataStringRequest = StringRequest(Request.Method.GET, url,
             Response.Listener<String> { response ->Log.d("Szerver_response", response)
                                       fileokLista=response
                                       val fileTempCsakhogyLegyen=fileokLista.split("\n")
                                       for (fileBelsoTempCsakhogyBonyiLegyen in fileTempCsakhogyLegyen){
-                                          Log.d("Szerver_Belso", "http://weblapp.hu/kepek/$fileBelsoTempCsakhogyBonyiLegyen")
+                                          Log.d("Szerver_Belso", domain+"kepek/$fileBelsoTempCsakhogyBonyiLegyen")
                                           imageList.add(
                                               SlideModel(
-                                                  "http://weblapp.hu/kepek/$fileBelsoTempCsakhogyBonyiLegyen",
+                                                  domain+"kepek/$fileBelsoTempCsakhogyBonyiLegyen",
                                                   "Nem kell title"
                                               )
                                           )
@@ -59,19 +61,19 @@ class MainActivity : AppCompatActivity() {
                                                 imageSlider.startSliding(3000)
                                                 playStopImageView.setBackgroundColor(Color.GREEN)
                                                 //Toast.makeText(this@MainActivity, "Start", Toast.LENGTH_LONG).show()
-                                        }
+                                            }
 
                                             override fun onItemSelected(position: Int) {
                                                 //Log.d("Click", "Simple click")
                                                 imageSlider.stopSliding()
                                                 playStopImageView.setBackgroundColor(Color.RED)
                                                 //Toast.makeText(this@MainActivity, "Stop", Toast.LENGTH_LONG).show()
-                                    }
-
-                            })
+                                            }
+                                        })
                                       },
 
-            Response.ErrorListener { error-> Log.d("Szerver_error", error.message.toString()) })
+            Response.ErrorListener { error-> Log.d("Szerver_error", error.message.toString())
+                                    Toast.makeText(this, error.message.toString(), Toast.LENGTH_LONG).show()})
         insertDataQueqe.add(insertDataStringRequest)
 
         val timer = object: CountDownTimer(1800000, 1800000) {
