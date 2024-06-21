@@ -5,12 +5,18 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnClickListener
+import android.view.View.inflate
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil.setContentView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -19,13 +25,17 @@ import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-class MainActivity : AppCompatActivity() {
+    val TAG = "MIDrawerActivity"
+    private var slideType = 0
+    private lateinit var activityDataBinding: DataBindingUtil
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+       enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -34,7 +44,8 @@ class MainActivity : AppCompatActivity() {
         val imageList = ArrayList<SlideModel>() // Create image list
         val imageSlider = findViewById<ImageSlider>(R.id.image_slider)
         val playStopImageView = findViewById<ImageView>(R.id.playStopImageView)
-        
+
+
         var fileokLista=""
 
         val insertDataQueqe = Volley.newRequestQueue(this)
@@ -88,6 +99,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
         timer.start()
+    }
+
+    override fun onClick(v: View?) {
+        TODO("Not yet implemented")
     }
 
 }

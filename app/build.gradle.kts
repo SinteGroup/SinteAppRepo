@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.databinding.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -49,7 +50,6 @@ dependencies {
     //sajat implementation
     implementation("com.github.denzcoskun:ImageSlideshow:0.1.2")
     implementation("com.otaliastudios:zoomlayout:1.9.0")
-    implementation("com.github.jkantech:crud:1.0.2")
     implementation("com.android.volley:volley:1.2.1")
-
+    implementation("com.google.android.material:material:1.0.0")
 }
